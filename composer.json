@@ -1,0 +1,13 @@
+{
+    "name": "bedomarci/sell-magazin-ajanlo",
+    "type": "project",
+    "require": {
+        "deliciousbrains/wp-background-processing": "^1.0"
+    },
+    "authors": [
+        {
+            "name": "Bedo Marci",
+            "email": "bedomarci@gmail.com"
+        }
+    ]
+}
