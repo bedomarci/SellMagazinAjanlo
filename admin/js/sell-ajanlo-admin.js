@@ -34,8 +34,8 @@
             e.preventDefault();
             var postId = $(this).data('id');
             $('#recalculate-suggestion>.spinner').addClass('is-active');
-            recalculateSuggestion(postId, null, null, function (response) {
-                console.log('success')
+            recalculateSuggestion(postId, function (response) {
+                console.log(response);
                 $('#recalculate-suggestion>.spinner').removeClass('is-active');
                 });
         });
@@ -44,6 +44,7 @@
             e.preventDefault();
             var span = $(this).children().first();
             var postId = $(this).data('id');
+
             span.text('...');
             recalculateSuggestion(postId, function (response) {
                 span.text('');
@@ -52,15 +53,20 @@
     });
 
 
-    function recalculateSuggestion(postId, done, fail, always) {
+    function recalculateSuggestion(postId, success) {
         var endpoint = '/wp-json/suggester/v1/recalculate';
-        $.ajax({
-            url: endpoint,
-            method: 'POST', // POST means "add friend" for example.
-            data: {
-                id: postId,
-            }
-        }).done(done).fail(fail).always(always);
+        // $.ajax({
+        //     url: endpoint,
+        //     method: 'POST', // POST means "add friend" for example.
+        //     data: {
+        //         id: postId,
+        //     }
+        // }).done(done).fail(fail).always(always);
+        var data = {
+            'action': 'recalculate_suggestion',
+            'id': postId,
+        };
+        jQuery.post("/wp-admin/admin-ajax.php", data, success);
     }
 
     $(document).ready(function () {

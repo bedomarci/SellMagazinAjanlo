@@ -1,13 +1,33 @@
 {
-    "name": "bedomarci/sell-magazin-ajanlo",
-    "type": "project",
-    "require": {
-        "deliciousbrains/wp-background-processing": "^1.0"
-    },
-    "authors": [
-        {
-            "name": "Bedo Marci",
-            "email": "bedomarci@gmail.com"
-        }
-    ]
+  "name": "bedomarci/sell-magazin-ajanlo",
+  "type": "project",
+  "require": {
+    "deliciousbrains/wp-background-processing": "^1.0"
+  },
+  "authors": [
+    {
+      "name": "Bedo Marci",
+      "email": "bedomarci@gmail.com"
+    }
+  ],
+  "extra": {
+    "mozart": {
+      "dep_namespace": "SellMagazin\\Dependencies\\",
+      "dep_directory": "/includes/dependencies/",
+      "classmap_directory": "/includes/",
+      "classmap_prefix": "SELL_",
+      "packages": [],
+      "delete_vendor_directories": true
+    }
+  },
+  "autoload": {
+    "psr-4": {
+      "SellMagazin\\": "includes/classes"
+    }
+  },
+  "scripts": {
+  },
+  "require-dev": {
+    "coenjacobs/mozart": "^0.4.0"
+  }
 }

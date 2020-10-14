@@ -99,6 +99,7 @@ class Sell_Ajanlo {
 	 */
 	private function load_dependencies() {
 
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'vendor/autoload.php';
 		/**
 		 * The class responsible for orchestrating the actions and filters of the
 		 * core plugin.
@@ -114,14 +115,15 @@ class Sell_Ajanlo {
 		/**
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-post-suggester.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-sell-ajanlo-admin.php';
 
-		/**
+
+        /**
 		 * The class responsible for defining all actions that occur in the public-facing
 		 * side of the site.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-sell-ajanlo-public.php';
+
 
 		$this->loader = new Sell_Ajanlo_Loader();
 
@@ -157,12 +159,20 @@ class Sell_Ajanlo {
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
+		$this->loader->add_action( 'plugins_loaded', $plugin_admin, 'register_async_jobs' );
         $this->loader->add_action('init', $plugin_admin, 'register_post_meta');
         $this->loader->add_action('post_submitbox_misc_actions', $plugin_admin, 'add_post_edit_recalculate_suggestion_button');
         $this->loader->add_filter('post_row_actions', $plugin_admin, 'add_post_row_edit_recalculate_suggestion_button');
-        $this->loader->add_action('save_post_post', $plugin_admin, 'handle_recalculate_suggestion_request');
-        $this->loader->add_action('rest_api_init', $plugin_admin, 'register_rcalculate_suggestion_REST_endpoint');
+        $this->loader->add_action('save_post_post', $plugin_admin, 'handle_recalculate_suggestion_request'); //TODO meg nincs kesz
+        $this->loader->add_action('wp_ajax_recalculate_suggestion', $plugin_admin, 'handle_recalculate_suggestion_ajax_request');
+
         $this->loader->add_action('sell_magazin_daily_schedule', $plugin_admin, 'schedule_daily_recalculation');
+        $this->loader->add_action('sell_magazin_validity_calculation_schedule', $plugin_admin, 'sell_magazin_validity_calculation');
+
+
+        //TODO KILLME
+        $this->loader->add_filter('cron_schedules', $plugin_admin, 'wpshout_add_cron_interval');
+
 
 
 
