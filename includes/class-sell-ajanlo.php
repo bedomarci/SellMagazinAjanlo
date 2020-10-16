@@ -13,6 +13,9 @@
  * @subpackage Sell_Ajanlo/includes
  */
 
+use SellMagazin\Highlight_Updater;
+use SellMagazin\Single_Validity_Updater;
+
 /**
  * The core plugin class.
  *
@@ -163,11 +166,15 @@ class Sell_Ajanlo {
         $this->loader->add_action('init', $plugin_admin, 'register_post_meta');
         $this->loader->add_action('post_submitbox_misc_actions', $plugin_admin, 'add_post_edit_recalculate_suggestion_button');
         $this->loader->add_filter('post_row_actions', $plugin_admin, 'add_post_row_edit_recalculate_suggestion_button');
-        $this->loader->add_action('save_post_post', $plugin_admin, 'handle_recalculate_suggestion_request'); //TODO meg nincs kesz
+        $this->loader->add_action('save_post_post', $plugin_admin, 'handle_recalculate_suggestion_request');
+
+        $this->loader->add_action('update_post_meta', new Highlight_Updater(), 'handle', 10, 4);
+        $this->loader->add_action('update_post_meta', new Single_Validity_Updater(), 'handle', 10, 4);
+
         $this->loader->add_action('wp_ajax_recalculate_suggestion', $plugin_admin, 'handle_recalculate_suggestion_ajax_request');
 
         $this->loader->add_action('sell_magazin_daily_schedule', $plugin_admin, 'schedule_daily_recalculation');
-        $this->loader->add_action('sell_magazin_validity_calculation_schedule', $plugin_admin, 'sell_magazin_validity_calculation');
+        $this->loader->add_action('sell_magazin_validity_update_schedule', $plugin_admin, 'sell_magazin_validity_update');
 
 
         //TODO KILLME

@@ -9,18 +9,18 @@
 namespace SellMagazin;
 
 
-class Validity_Calculator
+class Batch_Validity_Updater
 {
 
-    public function calculate()
+    public function update()
     {
         $all_posts = $this->get_all_post_with_interval();
         $valid_posts = $this->get_all_valid_post();
         foreach ($all_posts as $post) {
             $is_valid = in_array($post, $valid_posts);
             update_post_meta($post, 'sellmagazin_suggestion_valid', (int)$is_valid);
-
         }
+        wp_reset_postdata();
     }
 
     private function get_all_post_with_interval()

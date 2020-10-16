@@ -12,7 +12,7 @@
 
 use SellMagazin\Suggestion_Calculation_Process;
 use SellMagazin\Suggestion_Calculation_Request;
-use SellMagazin\Validity_Calculation_Request;
+use SellMagazin\Batch_Validity_Updater_Request;
 
 //use SellMagazin\Suggestion_Calculation_Process;
 
@@ -49,7 +49,7 @@ class Sell_Ajanlo_Admin
 
     protected $suggestion_calculation_request;
     protected $suggestion_calculation_process;
-    protected $validity_calculation_request;
+    protected $validity_updater_request;
 
 
     /**
@@ -139,7 +139,7 @@ class Sell_Ajanlo_Admin
     {
         $this->suggestion_calculation_request = new Suggestion_Calculation_Request();
         $this->suggestion_calculation_process = new Suggestion_Calculation_Process();
-        $this->validity_calculation_request = new Validity_Calculation_Request();
+        $this->validity_updater_request = new Batch_Validity_Updater_Request();
     }
 
     function registerDailyRecalculationCronJob()
@@ -184,11 +184,13 @@ class Sell_Ajanlo_Admin
     {
         $this->handle_recalculate_suggestion_request($_POST['id']);
         wp_die();
+
+
         //sync
 //        $post_id = $_POST['id'];
 //        $calculator = new \SellMagazin\Suggestion_Calculator($post_id);
 //        echo print_r($calculator->calculate());
-//        $calculator = new \SellMagazin\Validity_Calculator();
+//        $calculator = new \SellMagazin\Validity_Updater();
 //        echo $calculator->calculate();
 
 
@@ -206,9 +208,9 @@ class Sell_Ajanlo_Admin
 //        $this->calculation_process->save()->dispatch();
     }
 
-    function sell_magazin_validity_calculation()
+    function sell_magazin_validity_update()
     {
-        $this->validity_calculation_request->dispatch();
+        $this->validity_updater_request->dispatch();
     }
 
 

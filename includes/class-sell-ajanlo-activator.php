@@ -38,7 +38,7 @@ class Sell_Ajanlo_Activator
         }
 
         if (!wp_next_scheduled('sell_magazin_validity_calculation_schedule')) {
-            wp_schedule_event(strtotime('05:00:00'), 'daily', 'sell_magazin_validity_calculation_schedule');
+            wp_schedule_event(strtotime('05:00:00'), 'daily', 'sell_magazin_validity_update_schedule');
         }
 
     }
