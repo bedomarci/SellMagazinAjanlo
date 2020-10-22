@@ -10,16 +10,6 @@
       "email": "bedomarci@gmail.com"
     }
   ],
-  "extra": {
-    "mozart": {
-      "dep_namespace": "SellMagazin\\Dependencies\\",
-      "dep_directory": "/dependencies",
-      "classmap_directory": "/dependencies",
-      "classmap_prefix": "SM_",
-      "packages": ["deliciousbrains/wp-background-processing"],
-      "delete_vendor_directories": true
-    }
-  },
   "autoload": {
     "psr-4": {
       "SellMagazin\\": "includes/classes"
@@ -28,6 +18,5 @@
   "scripts": {
   },
   "require-dev": {
-    "coenjacobs/mozart": "^0.4.0"
   }
 }

@@ -15,6 +15,7 @@
 
 use SellMagazin\Highlight_Updater;
 use SellMagazin\Single_Validity_Updater;
+use SellMagazin\Suggestion_Calculator_Settings_Page;
 
 /**
  * The core plugin class.
@@ -38,7 +39,7 @@ class Sell_Ajanlo {
 	 *
 	 * @since    1.0.0
 	 * @access   protected
-	 * @var      Sell_Ajanlo_Loader    $loader    Maintains and registers all hooks for the plugin.
+	 * @var      Sell_Ajanlo_Loader $loader Maintains and registers all hooks for the plugin.
 	 */
 	protected $loader;
 
@@ -47,7 +48,7 @@ class Sell_Ajanlo {
 	 *
 	 * @since    1.0.0
 	 * @access   protected
-	 * @var      string    $plugin_name    The string used to uniquely identify this plugin.
+	 * @var      string $plugin_name The string used to uniquely identify this plugin.
 	 */
 	protected $plugin_name;
 
@@ -56,7 +57,7 @@ class Sell_Ajanlo {
 	 *
 	 * @since    1.0.0
 	 * @access   protected
-	 * @var      string    $version    The current version of the plugin.
+	 * @var      string $version The current version of the plugin.
 	 */
 	protected $version;
 
@@ -102,7 +103,14 @@ class Sell_Ajanlo {
 	 */
 	private function load_dependencies() {
 
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'vendor/autoload.php';
+		$autoload_path = plugin_dir_path( dirname( __FILE__ ) ) . 'vendor/autoload.php';
+		if ( file_exists( $autoload_path ) ) {
+			require_once $autoload_path;
+		} else {
+			$command = 'composer install -d ' . plugin_dir_path( dirname( __FILE__ ) );
+			wp_die( "Dependencies are missing. Please run the following command on the host:<br/><pre>$command</pre>" );
+		}
+
 		/**
 		 * The class responsible for orchestrating the actions and filters of the
 		 * core plugin.
@@ -121,7 +129,7 @@ class Sell_Ajanlo {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-sell-ajanlo-admin.php';
 
 
-        /**
+		/**
 		 * The class responsible for defining all actions that occur in the public-facing
 		 * side of the site.
 		 */
@@ -158,29 +166,29 @@ class Sell_Ajanlo {
 	 */
 	private function define_admin_hooks() {
 
+		$plugin_admin_page = new Suggestion_Calculator_Settings_Page();
+
 		$plugin_admin = new Sell_Ajanlo_Admin( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 		$this->loader->add_action( 'plugins_loaded', $plugin_admin, 'register_async_jobs' );
-        $this->loader->add_action('init', $plugin_admin, 'register_post_meta');
-        $this->loader->add_action('post_submitbox_misc_actions', $plugin_admin, 'add_post_edit_recalculate_suggestion_button');
-        $this->loader->add_filter('post_row_actions', $plugin_admin, 'add_post_row_edit_recalculate_suggestion_button');
-        $this->loader->add_action('save_post_post', $plugin_admin, 'handle_recalculate_suggestion_request');
+		$this->loader->add_action( 'init', $plugin_admin, 'register_post_meta' );
+		$this->loader->add_action( 'post_submitbox_misc_actions', $plugin_admin, 'add_post_edit_recalculate_suggestion_button' );
+		$this->loader->add_filter( 'post_row_actions', $plugin_admin, 'add_post_row_edit_recalculate_suggestion_button' );
+		$this->loader->add_action( 'save_post_post', $plugin_admin, 'handle_recalculate_suggestion_request' );
 
-        $this->loader->add_action('update_post_meta', new Highlight_Updater(), 'handle', 10, 4);
-        $this->loader->add_action('update_post_meta', new Single_Validity_Updater(), 'handle', 10, 4);
+		$this->loader->add_action( 'update_post_meta', new Highlight_Updater(), 'handle', 10, 4 );
+		$this->loader->add_action( 'update_post_meta', new Single_Validity_Updater(), 'handle', 10, 4 );
 
-        $this->loader->add_action('wp_ajax_recalculate_suggestion', $plugin_admin, 'handle_recalculate_suggestion_ajax_request');
+		$this->loader->add_action( 'wp_ajax_recalculate_suggestion', $plugin_admin, 'handle_recalculate_suggestion_ajax_request' );
 
-        $this->loader->add_action('sell_magazin_daily_schedule', $plugin_admin, 'schedule_daily_recalculation');
-        $this->loader->add_action('sell_magazin_validity_update_schedule', $plugin_admin, 'sell_magazin_validity_update');
-
-
-        //TODO KILLME
-        $this->loader->add_filter('cron_schedules', $plugin_admin, 'wpshout_add_cron_interval');
+		$this->loader->add_action( 'sell_magazin_daily_schedule', $plugin_admin, 'schedule_daily_recalculation' );
+		$this->loader->add_action( 'sell_magazin_validity_update_schedule', $plugin_admin, 'sell_magazin_validity_update' );
 
 
+		//TODO KILLME
+		$this->loader->add_filter( 'cron_schedules', $plugin_admin, 'wpshout_add_cron_interval' );
 
 
 	}
@@ -198,6 +206,9 @@ class Sell_Ajanlo {
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
+		$this->loader->add_action( 'et_builder_modules_loaded', $plugin_public, 'initialize_divi_module' );
+
+
 
 	}
 
@@ -214,8 +225,8 @@ class Sell_Ajanlo {
 	 * The name of the plugin used to uniquely identify it within the context of
 	 * WordPress and to define internationalization functionality.
 	 *
-	 * @since     1.0.0
 	 * @return    string    The name of the plugin.
+	 * @since     1.0.0
 	 */
 	public function get_plugin_name() {
 		return $this->plugin_name;
@@ -224,8 +235,8 @@ class Sell_Ajanlo {
 	/**
 	 * The reference to the class that orchestrates the hooks with the plugin.
 	 *
-	 * @since     1.0.0
 	 * @return    Sell_Ajanlo_Loader    Orchestrates the hooks of the plugin.
+	 * @since     1.0.0
 	 */
 	public function get_loader() {
 		return $this->loader;
@@ -234,8 +245,8 @@ class Sell_Ajanlo {
 	/**
 	 * Retrieve the version number of the plugin.
 	 *
-	 * @since     1.0.0
 	 * @return    string    The version number of the plugin.
+	 * @since     1.0.0
 	 */
 	public function get_version() {
 		return $this->version;

@@ -155,9 +155,6 @@ class Sell_Ajanlo_Admin
         if (get_current_screen()->post_type != 'post') return;
         ?>
         <div class="misc-pub-section curtime misc-pub-curtime">
-            Validity: <b><?php print_r(get_post_meta($post->ID, 'sellmagazin_suggestion_valid')) ?></b>
-        </div>
-        <div class="misc-pub-section curtime misc-pub-curtime">
             Ajánlások ideje: <b><?php echo get_post_meta($post->ID, 'sellmagazin_suggestion_last_update', true) ?></b>
         </div>
         <div style="padding: 10px; text-align: left" id="recalculate-suggestion">
@@ -182,17 +179,17 @@ class Sell_Ajanlo_Admin
 
     function handle_recalculate_suggestion_ajax_request()
     {
-        $this->handle_recalculate_suggestion_request($_POST['id']);
-        wp_die();
+//        $this->handle_recalculate_suggestion_request($_POST['id']);
+//        wp_die();
 
 
         //sync
-//        $post_id = $_POST['id'];
-//        $calculator = new \SellMagazin\Suggestion_Calculator($post_id);
-//        echo print_r($calculator->calculate());
+        $post_id = $_POST['id'];
+        $calculator = new \SellMagazin\Suggestion_Calculator($post_id);
+        echo print_r($calculator->calculate());
 //        $calculator = new \SellMagazin\Validity_Updater();
 //        echo $calculator->calculate();
-
+//
 
     }
 

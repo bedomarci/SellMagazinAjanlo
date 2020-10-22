@@ -10,6 +10,8 @@
  * @subpackage Sell_Ajanlo/public
  */
 
+use SellMagazin\Suggestion_Divi_Builder_Module;
+
 /**
  * The public-facing functionality of the plugin.
  *
@@ -98,6 +100,10 @@ class Sell_Ajanlo_Public {
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/sell-ajanlo-public.js', array( 'jquery' ), $this->version, false );
 
+	}
+
+	function initialize_divi_module() {
+		new Suggestion_Divi_Builder_Module();
 	}
 
 }
