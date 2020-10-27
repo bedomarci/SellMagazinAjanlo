@@ -1,46 +1,21 @@
 <?php
 
 
-namespace SellMagazin;
+namespace SellMagazin\Settings;
 
 
-class Suggestion_Calculator_Settings_Page {
+use SellMagazin\Interfaces\Action_Register;
+
+class Plugin_Settings_Init extends Action_Register {
 	private $suggestion_calculator_settings_options;
 
+	protected $hook = 'admin_init';
+
 	public function __construct() {
-		add_action( 'admin_menu', array( $this, 'suggestion_calculator_settings_add_plugin_page' ) );
-		add_action( 'admin_init', array( $this, 'suggestion_calculator_settings_page_init' ) );
+		$this->suggestion_calculator_settings_options = get_option( 'suggestion_calculator_settings_option_name' );
 	}
 
-	public function suggestion_calculator_settings_add_plugin_page() {
-		add_options_page(
-			'Cikk Ajánló', // page_title
-			'Cikk Ajánló', // menu_title
-			'manage_options', // capability
-			'suggestion-calculator-settings', // menu_slug
-			array( $this, 'suggestion_calculator_settings_create_admin_page' ) // function
-		);
-	}
-
-	public function suggestion_calculator_settings_create_admin_page() {
-		$this->suggestion_calculator_settings_options = get_option( 'suggestion_calculator_settings_option_name' ); ?>
-
-        <div class="wrap">
-            <h2>Suggestion Calculator Settings</h2>
-            <p></p>
-			<?php settings_errors(); ?>
-
-            <form method="post" action="options.php">
-				<?php
-				settings_fields( 'suggestion_calculator_settings_option_group' );
-				do_settings_sections( 'suggestion-calculator-settings-admin' );
-				submit_button();
-				?>
-            </form>
-        </div>
-	<?php }
-
-	public function suggestion_calculator_settings_page_init() {
+	public function run(...$args) {
 		register_setting(
 			'suggestion_calculator_settings_option_group', // option_group
 			'suggestion_calculator_settings_option_name', // option_name
@@ -66,7 +41,7 @@ class Suggestion_Calculator_Settings_Page {
 	public function suggestion_calculator_settings_sanitize( $input ) {
 		$sanitary_values = array();
 		if ( isset( $input['number_of_suggestion_calculation'] ) ) {
-			$sanitary_values['number_of_suggestion_calculation'] = (int)( $input['number_of_suggestion_calculation'] );
+			$sanitary_values['number_of_suggestion_calculation'] = (int) ( $input['number_of_suggestion_calculation'] );
 		}
 
 		return $sanitary_values;
@@ -82,5 +57,4 @@ class Suggestion_Calculator_Settings_Page {
 			isset( $this->suggestion_calculator_settings_options['number_of_suggestion_calculation'] ) ? esc_attr( $this->suggestion_calculator_settings_options['number_of_suggestion_calculation'] ) : ''
 		);
 	}
-
 }

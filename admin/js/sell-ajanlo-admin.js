@@ -54,17 +54,9 @@
 
 
     function recalculateSuggestion(postId, success) {
-        var endpoint = '/wp-json/suggester/v1/recalculate';
-        // $.ajax({
-        //     url: endpoint,
-        //     method: 'POST', // POST means "add friend" for example.
-        //     data: {
-        //         id: postId,
-        //     }
-        // }).done(done).fail(fail).always(always);
         var data = {
             'action': 'recalculate_suggestion',
-            'id': postId,
+            'post_id': postId,
         };
         jQuery.post("/wp-admin/admin-ajax.php", data, success);
     }

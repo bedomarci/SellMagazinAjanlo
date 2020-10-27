@@ -10,7 +10,7 @@
  * @subpackage Sell_Ajanlo/public
  */
 
-use SellMagazin\Suggestion_Divi_Builder_Module;
+use SellMagazin\Divi\Suggestion_Divi_Builder_Module;
 
 /**
  * The public-facing functionality of the plugin.

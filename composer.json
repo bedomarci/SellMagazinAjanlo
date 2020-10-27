@@ -12,7 +12,7 @@
   ],
   "autoload": {
     "psr-4": {
-      "SellMagazin\\": "includes/classes"
+      "SellMagazin\\": "includes/classes/"
     }
   },
   "scripts": {

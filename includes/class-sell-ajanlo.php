@@ -13,9 +13,23 @@
  * @subpackage Sell_Ajanlo/includes
  */
 
-use SellMagazin\Highlight_Updater;
-use SellMagazin\Single_Validity_Updater;
-use SellMagazin\Suggestion_Calculator_Settings_Page;
+use SellMagazin\Divi\Divi_Component_Register;
+use SellMagazin\Interfaces\Action_Register;
+use SellMagazin\Interfaces\Filter_Register;
+use SellMagazin\PostMeta\Archive_Custom_Fields_Register;
+use SellMagazin\PostMeta\Post_Edit_Recalculate_Suggestion_Button;
+use SellMagazin\PostMeta\Post_Row_Edit_Recalculate_Suggestion_Button;
+use SellMagazin\PostMeta\Post_Suggestion_Custom_Fields_Register;
+use SellMagazin\PostMeta\Post_Suggestion_Meta_Register;
+use SellMagazin\PostUpdater\Batch_Validity_Updater;
+use SellMagazin\PostUpdater\Calculation_Ajax_Updater;
+use SellMagazin\PostUpdater\Calculation_Updater;
+use SellMagazin\PostUpdater\Highlight_Updater;
+use SellMagazin\PostUpdater\Single_Validity_Updater;
+use SellMagazin\Queue\Async_Job_Register;
+use SellMagazin\Settings\Plugin_Settings_Init;
+use SellMagazin\Settings\Plugin_Settings_Page;
+
 
 /**
  * The core plugin class.
@@ -82,6 +96,7 @@ class Sell_Ajanlo {
 		$this->set_locale();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
+		$this->auto_define();
 
 	}
 
@@ -166,25 +181,17 @@ class Sell_Ajanlo {
 	 */
 	private function define_admin_hooks() {
 
-		$plugin_admin_page = new Suggestion_Calculator_Settings_Page();
+//		$plugin_admin_page = new Suggestion_Calculator_Settings_Page();
 
 		$plugin_admin = new Sell_Ajanlo_Admin( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-		$this->loader->add_action( 'plugins_loaded', $plugin_admin, 'register_async_jobs' );
-		$this->loader->add_action( 'init', $plugin_admin, 'register_post_meta' );
-		$this->loader->add_action( 'post_submitbox_misc_actions', $plugin_admin, 'add_post_edit_recalculate_suggestion_button' );
-		$this->loader->add_filter( 'post_row_actions', $plugin_admin, 'add_post_row_edit_recalculate_suggestion_button' );
-		$this->loader->add_action( 'save_post_post', $plugin_admin, 'handle_recalculate_suggestion_request' );
 
-		$this->loader->add_action( 'update_post_meta', new Highlight_Updater(), 'handle', 10, 4 );
-		$this->loader->add_action( 'update_post_meta', new Single_Validity_Updater(), 'handle', 10, 4 );
-
-		$this->loader->add_action( 'wp_ajax_recalculate_suggestion', $plugin_admin, 'handle_recalculate_suggestion_ajax_request' );
+//		$this->loader->add_action( 'wp_ajax_recalculate_suggestion', $plugin_admin, 'handle_recalculate_suggestion_ajax_request' );
 
 		$this->loader->add_action( 'sell_magazin_daily_schedule', $plugin_admin, 'schedule_daily_recalculation' );
-		$this->loader->add_action( 'sell_magazin_validity_update_schedule', $plugin_admin, 'sell_magazin_validity_update' );
+//		$this->loader->add_action( 'sell_magazin_validity_update_schedule', $plugin_admin, 'sell_magazin_validity_update' );
 
 
 		//TODO KILLME
@@ -206,8 +213,7 @@ class Sell_Ajanlo {
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
-		$this->loader->add_action( 'et_builder_modules_loaded', $plugin_public, 'initialize_divi_module' );
-
+//		$this->loader->add_action( 'et_builder_modules_loaded', $plugin_public, 'initialize_divi_module' );
 
 
 	}
@@ -250,6 +256,34 @@ class Sell_Ajanlo {
 	 */
 	public function get_version() {
 		return $this->version;
+	}
+
+	public function auto_define() {
+
+		$registers = [
+			new Post_Edit_Recalculate_Suggestion_Button(),
+			new Post_Row_Edit_Recalculate_Suggestion_Button(),
+			new Post_Suggestion_Custom_Fields_Register(),
+			new Archive_Custom_Fields_Register(),
+			new Post_Suggestion_Meta_Register(),
+			new Async_Job_Register(),
+			new Single_Validity_Updater(),
+			new Highlight_Updater(),
+			new Plugin_Settings_Init(),
+			new Plugin_Settings_Page(),
+			new Divi_Component_Register(),
+			new Calculation_Updater(),
+			new Calculation_Ajax_Updater(),
+			new Batch_Validity_Updater(),
+		];
+		foreach ( $registers as $register ) {
+			if ( is_subclass_of( $register, Action_Register::class ) ) {
+				$this->loader->add_action( $register->get_hook(), $register, 'run', $register->get_prioroty(), $register->get_accepted_args() );
+			}
+			if ( is_subclass_of( $register, Filter_Register::class ) ) {
+				$this->loader->add_filter( $register->get_hook(), $register, 'filter', $register->get_prioroty(), $register->get_accepted_args() );
+			}
+		}
 	}
 
 }

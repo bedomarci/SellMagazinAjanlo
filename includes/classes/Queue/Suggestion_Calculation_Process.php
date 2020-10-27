@@ -6,11 +6,10 @@
  * Time: 5:43 PM
  */
 
-namespace SellMagazin;
+namespace SellMagazin\Queue;
 
-use WP_Background_Process;
 
-class Suggestion_Calculation_Process extends WP_Background_Process
+class Suggestion_Calculation_Process extends \WP_Background_Process
 {
 
     protected $action = "batch_suggestion_calculation";

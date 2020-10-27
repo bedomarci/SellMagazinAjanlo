@@ -6,11 +6,12 @@
  * Time: 5:43 PM
  */
 
-namespace SellMagazin;
+namespace SellMagazin\Queue;
 
-use WP_Async_Request;
 
-class Suggestion_Calculation_Request extends WP_Async_Request
+use SellMagazin\Suggestion_Calculator;
+
+class Suggestion_Calculation_Request extends \WP_Async_Request
 {
     protected $action = "single_suggestion_calculation";
 
@@ -19,12 +20,11 @@ class Suggestion_Calculation_Request extends WP_Async_Request
         $this->data(array('post_id' => $postId));
         return $this;
     }
-
+    
     protected function handle()
     {
-
-//        $message = "on dispatch " . $_POST['post_id'];
-//        sell_log($message);
+        $message = "on dispatch " . $_POST['post_id'];
+        sell_log($message);
         $calculator = new Suggestion_Calculator($_POST['post_id']);
         $calculator->calculate();
     }
