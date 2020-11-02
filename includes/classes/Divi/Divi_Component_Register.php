@@ -9,5 +9,6 @@ class Divi_Component_Register extends \SellMagazin\Interfaces\Action_Register {
 
 	public function run(...$args) {
 		new Suggestion_Divi_Builder_Module();
+		new Archive_Divi_Builder_Module();
 	}
 }

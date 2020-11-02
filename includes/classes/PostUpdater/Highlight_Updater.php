@@ -19,7 +19,7 @@ class Highlight_Updater extends Action_Register {
 
 	public function run( ...$args ) {
 		$this->post_id = $args[0];
-		$highlight = $_POST['acf']['field_highlight'];
+		$highlight     = $_POST['acf']['field_highlight'];
 
 		$query = $this->get_highlighted_posts_query();
 
@@ -33,7 +33,7 @@ class Highlight_Updater extends Action_Register {
 				update_option( 'highlighted_post_id', $this->post_id );
 			}
 		}
-		define( 'highlight_option_updated' );
+		define( 'highlight_option_updated', true );
 
 		if ( $has_previous_highlight ) {
 			$highlighted_post_ids = $query->get_posts();
@@ -49,7 +49,7 @@ class Highlight_Updater extends Action_Register {
 		$query_args = array(
 			'post_type'      => 'post',
 			'post_status'    => 'publish',
-			'post__not_in'   => array($this->post_id),
+			'post__not_in'   => array( $this->post_id ),
 			'fields'         => 'ids',
 			'posts_per_page' => '-1',
 			'meta_query'     => array(

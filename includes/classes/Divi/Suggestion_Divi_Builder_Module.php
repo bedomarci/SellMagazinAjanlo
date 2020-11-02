@@ -53,10 +53,11 @@ class Suggestion_Divi_Builder_Module extends ET_Builder_Module_Blog {
 
 	public function render( $attrs, $content = null, $render_slug ) {
 		global $post, $wp_query, $wp_the_query, $suggestion_query;
-		$this->props['use_current_loop'] = 1;
-		$suggestion_ids = get_post_meta( $post->ID, 'sellmagazin_suggestions', true );
+		$this->props['use_current_loop'] = 1; //tricking module to use my fake main query. Haha, it is the suggestion query.
+		$this->props['include_categories'] = null; //otherwise PHP error is thrown from parent.
+		$suggestion_ids = get_post_meta( $post->ID, 'sellmagazin_suggestions', true ); //Here we go.
 
-		if ( is_null( $suggestion_query ) ) {
+		if ( is_null( $suggestion_query ) ) {//Run the query only once if multiple module is used on the page.
 			$suggestion_query = new \WP_Query( array(
 				'post_type' => 'post',
 //			'post__in'       => $suggestion_ids,
