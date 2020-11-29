@@ -11,7 +11,7 @@ class Async_Job_Register extends \SellMagazin\Interfaces\Action_Register {
 
 	public function run(...$args) {
 		new Suggestion_Calculation_Request();
-		new Suggestion_Calculation_Process();
+		new Batch_Suggestion_Calculation_Process();
 		new Batch_Validity_Updater_Request();
 	}
 }

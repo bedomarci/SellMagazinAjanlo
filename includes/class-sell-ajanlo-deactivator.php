@@ -32,6 +32,7 @@ class Sell_Ajanlo_Deactivator {
 	public static function deactivate() {
         wp_clear_scheduled_hook( 'sell_magazin_daily_schedule' );
         wp_clear_scheduled_hook( 'sell_magazin_validity_update_schedule' );
+        wp_clear_scheduled_hook( 'sell_magazin_suggestion_update_schedule' );
 	}
 
 }

@@ -16,7 +16,6 @@ class Batch_Validity_Updater_Request extends \WP_Async_Request {
 
 	protected $action = 'validity_calculation';
 
-
 	protected function handle() {
         $calculator = new Batch_Validity_Calculator();
         $calculator->calculate();

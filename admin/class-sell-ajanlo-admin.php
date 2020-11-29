@@ -11,7 +11,7 @@
  */
 
 
-use SellMagazin\Suggestion_Calculator;
+use SellMagazin\Calculator\Suggestion_Calculator;
 
 /**
  * The admin-specific functionality of the plugin.

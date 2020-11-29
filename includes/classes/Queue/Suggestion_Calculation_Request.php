@@ -9,7 +9,7 @@
 namespace SellMagazin\Queue;
 
 
-use SellMagazin\Suggestion_Calculator;
+use SellMagazin\Calculator\Suggestion_Calculator;
 
 class Suggestion_Calculation_Request extends \WP_Async_Request
 {

@@ -37,9 +37,13 @@ class Sell_Ajanlo_Activator
             wp_schedule_event(time(), 'everyminute', 'sell_magazin_daily_schedule');
         }
 
-        if (!wp_next_scheduled('sell_magazin_validity_calculation_schedule')) {
-            wp_schedule_event(strtotime('05:00:00'), 'daily', 'sell_magazin_validity_update_schedule');
-        }
+	    if (!wp_next_scheduled('sell_magazin_validity_update_schedule')) {
+		    wp_schedule_event(strtotime('03:00:00'), 'daily', 'sell_magazin_validity_update_schedule');
+	    }
+
+	    if (!wp_next_scheduled('sell_magazin_suggestion_update_schedule')) {
+		    wp_schedule_event(strtotime('05:00:00'), 'daily', 'sell_magazin_suggestion_update_schedule');
+	    }
 
     }
 

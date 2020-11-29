@@ -19,7 +19,7 @@ class Single_Validity_Updater extends Action_Register {
 
 	public function run( ...$args ) {
 		$meta_id    = $args[0];
-		$post_id    = $args[2];
+		$post_id    = $args[1];
 		$meta_key   = $args[2];
 		$meta_value = $args[3];
 		if ( $meta_key != 'validity_period_start' && $meta_key != 'validity_period_end' ) {

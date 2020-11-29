@@ -7,7 +7,7 @@ namespace SellMagazin\Calculator;
 class Batch_Validity_Calculator {
 
 	public function calculate() {
-		sell_log("batch validity calculator runs");
+		sell_log("-----------batch validity calculator runs");
 		$all_posts   = $this->get_all_post_with_interval();
 		$valid_posts = $this->get_all_valid_post();
 		foreach ( $all_posts as $post ) {

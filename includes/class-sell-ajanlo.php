@@ -21,6 +21,7 @@ use SellMagazin\PostMeta\Post_Edit_Recalculate_Suggestion_Button;
 use SellMagazin\PostMeta\Post_Row_Edit_Recalculate_Suggestion_Button;
 use SellMagazin\PostMeta\Post_Suggestion_Custom_Fields_Register;
 use SellMagazin\PostMeta\Post_Suggestion_Meta_Register;
+use SellMagazin\PostUpdater\Batch_Calculation_Updater;
 use SellMagazin\PostUpdater\Batch_Validity_Updater;
 use SellMagazin\PostUpdater\Calculation_Ajax_Updater;
 use SellMagazin\PostUpdater\Calculation_Updater;
@@ -275,6 +276,7 @@ class Sell_Ajanlo {
 			new Calculation_Updater(),
 			new Calculation_Ajax_Updater(),
 			new Batch_Validity_Updater(),
+			new Batch_Calculation_Updater(),
 		];
 		foreach ( $registers as $register ) {
 			if ( is_subclass_of( $register, Action_Register::class ) ) {
