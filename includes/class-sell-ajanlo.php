@@ -17,10 +17,12 @@ use SellMagazin\Divi\Divi_Component_Register;
 use SellMagazin\Interfaces\Action_Register;
 use SellMagazin\Interfaces\Filter_Register;
 use SellMagazin\PostMeta\Archive_Custom_Fields_Register;
+use SellMagazin\PostMeta\Handle_Manage_Posts_Columns;
 use SellMagazin\PostMeta\Post_Edit_Recalculate_Suggestion_Button;
 use SellMagazin\PostMeta\Post_Row_Edit_Recalculate_Suggestion_Button;
 use SellMagazin\PostMeta\Post_Suggestion_Custom_Fields_Register;
 use SellMagazin\PostMeta\Post_Suggestion_Meta_Register;
+use SellMagazin\PostMeta\Register_Manage_Posts_Columns;
 use SellMagazin\PostUpdater\Batch_Calculation_Updater;
 use SellMagazin\PostUpdater\Batch_Validity_Updater;
 use SellMagazin\PostUpdater\Calculation_Ajax_Updater;
@@ -41,7 +43,7 @@ use SellMagazin\Settings\Plugin_Settings_Page;
  * Also maintains the unique identifier of this plugin as well as the current
  * version of the plugin.
  *
- * @since      1.0.0
+ * @since      1.0.1
  * @package    Sell_Ajanlo
  * @subpackage Sell_Ajanlo/includes
  * @author     Bedő Marci <bedomarci@gmail.com>
@@ -191,12 +193,11 @@ class Sell_Ajanlo {
 
 //		$this->loader->add_action( 'wp_ajax_recalculate_suggestion', $plugin_admin, 'handle_recalculate_suggestion_ajax_request' );
 
-		$this->loader->add_action( 'sell_magazin_daily_schedule', $plugin_admin, 'schedule_daily_recalculation' );
+//		$this->loader->add_action( 'sell_magazin_daily_schedule', $plugin_admin, 'schedule_daily_recalculation' );
 //		$this->loader->add_action( 'sell_magazin_validity_update_schedule', $plugin_admin, 'sell_magazin_validity_update' );
 
 
-		//TODO KILLME
-		$this->loader->add_filter( 'cron_schedules', $plugin_admin, 'wpshout_add_cron_interval' );
+		$this->loader->add_filter( 'cron_schedules', $plugin_admin, 'register_cron_scheduler' );
 
 
 	}
@@ -277,6 +278,8 @@ class Sell_Ajanlo {
 			new Calculation_Ajax_Updater(),
 			new Batch_Validity_Updater(),
 			new Batch_Calculation_Updater(),
+			new Register_Manage_Posts_Columns(),
+			new Handle_Manage_Posts_Columns(),
 		];
 		foreach ( $registers as $register ) {
 			if ( is_subclass_of( $register, Action_Register::class ) ) {

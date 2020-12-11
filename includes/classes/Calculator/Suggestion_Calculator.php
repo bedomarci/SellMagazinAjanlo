@@ -40,9 +40,9 @@ class Suggestion_Calculator {
 		$post_suggestion_ids = array_merge( $post_suggestion_ids, $this->get_highlighted_content() );
 		$post_suggestion_ids = array_merge( $post_suggestion_ids, $this->get_civil_content() );
 //		sell_log( 'osszes post ' . implode( ', ', $post_suggestion_ids ) );
+		$post_suggestion_ids = $this->fill_missing_places( $post_suggestion_ids );
 		$post_suggestion_ids = $this->remove_this_post( $post_suggestion_ids );
 		$post_suggestion_ids = $this->remove_duplicates( $post_suggestion_ids );
-		$post_suggestion_ids = $this->fill_missing_places( $post_suggestion_ids );
 		$post_suggestion_ids = $this->remove_extra( $post_suggestion_ids );
 		$this->update_post( $post_suggestion_ids );
 	}
@@ -138,8 +138,6 @@ class Suggestion_Calculator {
 //            sell_log(print_r($posts, true));
 			$post_ids = array_merge( $post_ids, $posts );
 		}
-//
-//		sell_log('szamossaga ' . implode(' ', $post_ids));
 		return $post_ids;
 	}
 
@@ -154,24 +152,24 @@ class Suggestion_Calculator {
 	}
 
 	private function fill_missing_places( $post_ids ) {
-		$current_number_of_suggestions = count( $post_ids );
-		if ( $current_number_of_suggestions < $this->number_of_suggestion_calculation ) {
-			$number_of_missing = $this->number_of_suggestion_calculation - $current_number_of_suggestions;
+//		$current_number_of_suggestions = count( $post_ids );
+//		if ( $current_number_of_suggestions < $this->number_of_suggestion_calculation ) {
+//			$number_of_missing = $this->number_of_suggestion_calculation - $current_number_of_suggestions;
 			$query_args = array(
 				'post_type'      => 'post',
 				'post_status'    => 'publish',
 				'orderby' => 'publish_date',
 				'order' => 'DESC',
 				'fields'         => 'ids',
-				'posts_per_page' => $number_of_missing,
+				'posts_per_page' => $this->number_of_suggestion_calculation,
 				'category_name' => 'tartalek',
 			);
 			$the_query  = new \WP_Query( $query_args );
 			$posts      = $the_query->get_posts();
-            sell_log(print_r($posts, true));
+//            sell_log(print_r($posts, true));
 			$post_ids = array_merge( $post_ids, $posts );
 
-		}
+//		}
 		return $post_ids;
 	}
 

@@ -18,50 +18,33 @@ class Highlight_Updater extends Action_Register {
 	protected $post_id;
 
 	public function run( ...$args ) {
+		if ( ! array_key_exists( 'acf', $_POST ) ) {
+			return;
+		}
 		$this->post_id = $args[0];
-		$highlight     = $_POST['acf']['field_highlight'];
+		$is_this_post_highlight     = $_POST['acf']['field_highlight'];
 
-		$query = $this->get_highlighted_posts_query();
+		$previous_highlight_id     = get_option( 'highlighted_post_id', - 1 );
+		$has_previous_highlight = $previous_highlight_id != - 1;
 
-		$has_previous_highlight = $query->found_posts;
-
-		if ( ! defined( 'highlight_option_updated' ) ) {
-			if ( ! $has_previous_highlight && ! $highlight ) {
-				update_option( 'highlighted_post_id', - 1 );
+		$next_highlight_id = - 1;
+		if ( $previous_highlight_id == $this->post_id ) {
+			if ( $is_this_post_highlight ) {
+				$next_highlight_id = $this->post_id;
 			}
-			if ( $highlight ) {
-				update_option( 'highlighted_post_id', $this->post_id );
+		} else {
+			if ( $is_this_post_highlight ) {
+				$next_highlight_id = $this->post_id;
+			} else {
+				$next_highlight_id = $previous_highlight_id;
 			}
+
+			if ($has_previous_highlight) {
+				update_post_meta( $previous_highlight_id, 'highlight', 0 );
+			}
+
 		}
-		define( 'highlight_option_updated', true );
+		update_option( 'highlighted_post_id', $next_highlight_id );
 
-		if ( $has_previous_highlight ) {
-			$highlighted_post_ids = $query->get_posts();
-
-			foreach ( $highlighted_post_ids as $id ) {
-				update_post_meta( $id, 'highlight', 0 );
-			}
-			wp_reset_postdata();
-		}
-	}
-
-	function get_highlighted_posts_query() {
-		$query_args = array(
-			'post_type'      => 'post',
-			'post_status'    => 'publish',
-			'post__not_in'   => array( $this->post_id ),
-			'fields'         => 'ids',
-			'posts_per_page' => '-1',
-			'meta_query'     => array(
-				'0' => array(
-					'key'     => 'highlight',
-					'value'   => 1,
-					'compare' => '=',
-				),
-			),
-		);
-		$the_query  = new \WP_Query( $query_args );
-
-		return $the_query;
 	}
 }

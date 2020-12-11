@@ -85,8 +85,8 @@ class Sell_Ajanlo_Admin
          * class.
          */
 
-        wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/sell-ajanlo-admin.css', array(), time(), 'all');
-//        wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/sell-ajanlo-admin.css', array(), $this->version, 'all');
+//        wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/sell-ajanlo-admin.css', array(), time(), 'all');
+        wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/sell-ajanlo-admin.css', array(), $this->version, 'all');
 
     }
 
@@ -110,17 +110,9 @@ class Sell_Ajanlo_Admin
          * class.
          */
 
-        wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/sell-ajanlo-admin.js', array('jquery', 'wp-api'), time(), false);
-//        wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/sell-ajanlo-admin.js', array('jquery'), $this->version, false);
+//        wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/sell-ajanlo-admin.js', array('jquery', 'wp-api'), time(), false);
+        wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/sell-ajanlo-admin.js', array('jquery', 'wp-api'), $this->version, false);
 
-    }
-
-
-    function register_async_jobs()
-    {
-//        $this->suggestion_calculation_request = new Suggestion_Calculation_Request();
-//        $this->suggestion_calculation_process = new Suggestion_Calculation_Process();
-//        $this->validity_updater_request = new Batch_Validity_Updater_Request();
     }
 
     function registerDailyRecalculationCronJob()
@@ -130,25 +122,7 @@ class Sell_Ajanlo_Admin
         }
     }
 
-
-    function schedule_daily_recalculation()
-    {
-//        sell_log("daily recalculation");
-//
-//        $post_ids = [111, 112];
-//        foreach ($post_ids as $post_id) {
-//            $this->calculation_process->push_to_queue($post_id);
-//        }
-//        $this->calculation_process->save()->dispatch();
-    }
-
-    function sell_magazin_validity_update()
-    {
-        $this->validity_updater_request->dispatch();
-    }
-
-
-    function wpshout_add_cron_interval($schedules)
+    function register_cron_scheduler($schedules)
     {
         $schedules['everyminute'] = array(
             'interval' => 60, // time in seconds

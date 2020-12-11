@@ -32,6 +32,7 @@ class Single_Validity_Updater extends Action_Register {
 		$validity_start = new DateTime( $validity_start, $tz );
 		$validity_end   = new DateTime( $validity_end, $tz );
 
+		sell_log("updated ". $post_id);
 		$is_valid = (int) ( $validity_start <= $now && $validity_end >= $now );
 		update_post_meta( $post_id, 'sellmagazin_suggestion_valid', $is_valid );
 	}
